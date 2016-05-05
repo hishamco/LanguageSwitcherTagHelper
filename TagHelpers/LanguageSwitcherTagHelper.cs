@@ -34,21 +34,21 @@ public class LanguageSwitcherTagHelper : TagHelper
             case DisplayMode.ImageAndText:
                 output.Content.AppendHtml(@"<ul class='nav navbar-nav navbar-right'>
                         <li class='dropdown'>
-                            <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'><img src='/images/" + selectedCulture.TwoLetterISOLanguageName + ".png' /> " + selectedCulture.EnglishName + @"<span class='caret'></span></a>
+                            <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'><img src='/images/" + selectedCulture.Name + ".png' /> " + selectedCulture.EnglishName + @"<span class='caret'></span></a>
                             <ul class='dropdown-menu'>");
                 foreach (var culture in cultures)
                 {
-                    output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.TwoLetterISOLanguageName}')\"><img src='/images/{culture.TwoLetterISOLanguageName}.png' /> {culture.EnglishName}</a></li>");
+                    output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /> {culture.EnglishName}</a></li>");
                 }
                 break;
             case DisplayMode.Image:
                 output.Content.AppendHtml(@"<ul class='nav navbar-nav navbar-right'>
                         <li class='dropdown'>
-                            <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'><img src='/images/" + selectedCulture.TwoLetterISOLanguageName + @".png' /> <span class='caret'></span></a>
+                            <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'><img src='/images/" + selectedCulture.Name + @".png' /> <span class='caret'></span></a>
                             <ul class='dropdown-menu'>");
                 foreach (var culture in cultures)
                 {
-                    output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.TwoLetterISOLanguageName}')\"><img src='/images/{culture.TwoLetterISOLanguageName}.png' /></a></li>");
+                    output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /></a></li>");
                 }
                 break;
             case DisplayMode.Text:
@@ -58,7 +58,7 @@ public class LanguageSwitcherTagHelper : TagHelper
                             <ul class='dropdown-menu'>");
                 foreach (var culture in cultures)
                 {
-                    output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.TwoLetterISOLanguageName}')\">{culture.EnglishName}</a></li>");
+                    output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\">{culture.EnglishName}</a></li>");
                 }
                 break;
         }
