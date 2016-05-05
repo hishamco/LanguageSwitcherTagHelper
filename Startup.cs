@@ -17,6 +17,8 @@ namespace LanguageSwitcherTagHelper
             {
                 var supportedCultures = new []
                 {
+                    new CultureInfo("ar-SA"),
+                    new CultureInfo("ar-YE"),
                     new CultureInfo("en-US"),
                     new CultureInfo("fr"),
                     new CultureInfo("es")
