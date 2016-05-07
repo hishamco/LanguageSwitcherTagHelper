@@ -10,11 +10,11 @@ namespace LanguageSwitcherTagHelper.TagHelpers
     [HtmlTargetElement("language-switcher")]
     public class LanguageSwitcherTagHelper : TagHelper
     {
-        private IOptions<RequestLocalizationOptions> _locOptions;
+        private readonly IOptions<RequestLocalizationOptions> _localizationOptions;
 
         public LanguageSwitcherTagHelper(IOptions<RequestLocalizationOptions> options)
         {
-            _locOptions = options;
+            _localizationOptions = options;
         }
 
         [ViewContext, HtmlAttributeNotBound]
@@ -22,10 +22,24 @@ namespace LanguageSwitcherTagHelper.TagHelpers
 
         public DisplayMode Mode { get; set; } = DisplayMode.ImageAndText;
 
+        private void AppendScript(ref TagHelperOutput output)
+        {
+            output.Content.AppendHtml($@"
+        <script type='text/javascript'>
+            function useCookie(code) {{
+                var culture = code;
+                var uiCulture = code;
+                var cookieValue = '{CookieRequestCultureProvider.DefaultCookieName}=c='+code+'|uic='+code; 
+                document.cookie = cookieValue; 
+                window.location.reload();
+            }}
+        </script>");
+        }
+        
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var selectedCulture = ViewContext.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.Culture;
-            var cultures = _locOptions.Value.SupportedUICultures;
+            var cultures = _localizationOptions.Value.SupportedUICultures;
 
             output.TagName = null;
 
@@ -36,6 +50,7 @@ namespace LanguageSwitcherTagHelper.TagHelpers
                         <li class='dropdown'>
                             <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'><img src='/images/{selectedCulture.Name}.png' /> {selectedCulture.EnglishName}<span class='caret'></span></a>
                             <ul class='dropdown-menu'>");
+                    
                     foreach (var culture in cultures)
                     {
                         output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /> {culture.EnglishName}</a></li>");
@@ -46,12 +61,14 @@ namespace LanguageSwitcherTagHelper.TagHelpers
                         <li class='dropdown'>
                             <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'><img src='/images/{selectedCulture.Name}.png' /> <span class='caret'></span></a>
                             <ul class='dropdown-menu'>");
+                    
                     foreach (var culture in cultures)
                     {
                         output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /></a></li>");
                     }
                     break;
                 case DisplayMode.Text:
+                    
                     output.Content.AppendHtml($@"<ul class='nav navbar-nav navbar-right'>
                         <li class='dropdown'>
                             <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'> {selectedCulture.EnglishName}<span class='caret'></span></a>
@@ -62,19 +79,11 @@ namespace LanguageSwitcherTagHelper.TagHelpers
                     }
                     break;
             }
+            
             output.Content.AppendHtml(@"</ul>
                         </li>
                     </ul>");
-
-            output.Content.AppendHtml($@"<script type='text/javascript'>
-        function useCookie(code) {{
-            var culture = code;
-            var uiCulture = code;
-            var cookieValue = '{CookieRequestCultureProvider.DefaultCookieName}=c='+code+'|uic='+code; 
-            document.cookie = cookieValue; 
-            window.location.reload();
-        }}
-        </script>");
+            AppendScript(ref output);
         }
     }
 }
