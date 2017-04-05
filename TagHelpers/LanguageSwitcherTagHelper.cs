@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace LanguageSwitcherTagHelper.TagHelpers
 {
@@ -22,20 +23,6 @@ namespace LanguageSwitcherTagHelper.TagHelpers
 
         public DisplayMode Mode { get; set; } = DisplayMode.ImageAndText;
 
-        private void AppendScript(ref TagHelperOutput output)
-        {
-            output.Content.AppendHtml($@"
-        <script type='text/javascript'>
-            function useCookie(code) {{
-                var culture = code;
-                var uiCulture = code;
-                var cookieValue = '{CookieRequestCultureProvider.DefaultCookieName}=c='+code+'|uic='+code; 
-                document.cookie = cookieValue; 
-                window.location.reload();
-            }}
-        </script>");
-        }
-        
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var selectedCulture = ViewContext.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.Culture;
@@ -53,7 +40,7 @@ namespace LanguageSwitcherTagHelper.TagHelpers
                     
                     foreach (var culture in cultures)
                     {
-                        output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /> {culture.EnglishName}</a></li>");
+                        output.Content.AppendHtml($"<li><a href='#' onclick=\"appendLanguageSwitcherCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /> {culture.EnglishName}</a></li>");
                     }
                     break;
                 case DisplayMode.Image:
@@ -64,7 +51,7 @@ namespace LanguageSwitcherTagHelper.TagHelpers
                     
                     foreach (var culture in cultures)
                     {
-                        output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /></a></li>");
+                        output.Content.AppendHtml($"<li><a href='#' onclick=\"appendLanguageSwitcherCookie('{culture.Name}')\"><img src='/images/{culture.Name}.png' /></a></li>");
                     }
                     break;
                 case DisplayMode.Text:
@@ -75,7 +62,7 @@ namespace LanguageSwitcherTagHelper.TagHelpers
                             <ul class='dropdown-menu'>");
                     foreach (var culture in cultures)
                     {
-                        output.Content.AppendHtml($"<li><a href='#' onclick=\"useCookie('{culture.Name}')\">{culture.EnglishName}</a></li>");
+                        output.Content.AppendHtml($"<li><a href='#' onclick=\"appendLanguageSwitcherCookie('{culture.Name}')\">{culture.EnglishName}</a></li>");
                     }
                     break;
             }
@@ -83,7 +70,6 @@ namespace LanguageSwitcherTagHelper.TagHelpers
             output.Content.AppendHtml(@"</ul>
                         </li>
                     </ul>");
-            AppendScript(ref output);
         }
     }
 }

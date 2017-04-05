@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using LanguageSwitcherTagHelper.TagHelpers;
 
 namespace LanguageSwitcherTagHelper
 {
@@ -27,6 +29,8 @@ namespace LanguageSwitcherTagHelper
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
+
+            services.AddSingleton<ITagHelperComponent, LanguageSwitcherTagHelperComponent>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
