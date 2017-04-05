@@ -6,5 +6,8 @@ namespace LanguageSwitcherTagHelper
     {
         [HttpGet("/")]
         public IActionResult Index() => View();
+
+        [HttpGet("/About")]
+        public IActionResult About() => View();
     }
 }
